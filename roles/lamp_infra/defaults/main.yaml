@@ -1,0 +1,25 @@
+---
+lamp_task_manager:
+  - sec_group
+  - servers
+
+module_state: present
+
+infra_prefix: test- # This should be overridden in inventory
+domain_name: example.com # This also should be overridden in inventory
+
+
+# server_subnet: "{{ lamp_subnet_name | default('default-subnet') }}" # should be on pair with default value from network_infra
+server_net: "{{ lamp_network_name | default(infra_prefix + 'otc-net') }}" # should be on pair with default value from network_infra
+# security_group: "{{ bastion_security_group | default(infra_prefix + 'bastion_sg') }}"
+# server_fqdn: "{{ bastion_server_fqdn | default('bastion.' + domain_name) }}"
+dbserver_image: "{{ lamp_dbserver_image | default('Standard_Fedora_28_latest') }}"
+dbserver_flavor: "{{ lamp_dbserver_flavor | default('s2.large.1') }}"
+dbserver_fqdn: "{{ 'db.' + domain_name }}"
+dbserver_sg: "{{ (infra_prefix + 'lamp_db_sg') }}"
+webserver_image: "{{ lamp_webserver_image | default('Standard_Fedora_28_latest') }}"
+webserver_flavor: "{{ lamp_webserver_flavor | default('s2.large.1') }}"
+webserver_sg: "{{ (infra_prefix + 'lamp_web_sg') }}"
+webserver_fqdn: "{{ 'web.' + domain_name }}"
+ssh_key_name: "{{ (infra_prefix + 'KeyPair')}}"
+server_ssh_user: "{{ lamp_server_ssh_user | default('linux') }}"

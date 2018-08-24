@@ -1,0 +1,70 @@
+---
+- when: module_state != 'absent'
+  block:
+    - name: LAMP WS SecGrp
+      os_security_group:
+        state: "{{ module_state }}"
+        name: "{{ webserver_sg }}"
+        description: Security group for the LAMP Web server
+
+    - name: LAMP DB SecGrp
+      os_security_group:
+        state: "{{ module_state }}"
+        name: "{{ dbserver_sg }}"
+        description: Security group for the LAMP DB server
+
+    - name: LAMP SecGrp ICMP Rule
+      os_security_group_rule:
+        security_group: "{{ webserver_sg }}"
+        protocol: icmp
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: LAMP SecGrp ICMP Rule
+      os_security_group_rule:
+        security_group: "{{ dbserver_sg }}"
+        protocol: icmp
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: LAMP WEB SecGrp SSH Rule
+      os_security_group_rule:
+        security_group: "{{ webserver_sg }}"
+        protocol: tcp
+        port_range_min: 22
+        port_range_max: 22
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: LAMP DB SecGrp SSH Rule
+      os_security_group_rule:
+        security_group: "{{ dbserver_sg }}"
+        protocol: tcp
+        port_range_min: 22
+        port_range_max: 22
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: LAMP WEB SecGrp HTTP Rule
+      os_security_group_rule:
+        security_group: "{{ webserver_sg }}"
+        protocol: tcp
+        port_range_min: 80
+        port_range_max: 80
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: LAMP DB SecGrp DB Rule
+      os_security_group_rule:
+        security_group: "{{ dbserver_sg }}"
+        protocol: tcp
+        port_range_min: 3306
+        port_range_max: 3306
+        remote_group: "{{ webserver_sg }}"
+
+- when: module_state == 'absent'
+  block:
+    - name: Delete WS SecGrp
+      os_security_group:
+        state: "{{ module_state }}"
+        name: "{{ webserver_sg }}"
+
+    - name: Delete DB SecGrp
+      os_security_group:
+        state: "{{ module_state }}"
+        name: "{{ dbserver_sg }}"

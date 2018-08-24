@@ -1,0 +1,4 @@
+---
+packages:
+  - ansible
+  - python-dns

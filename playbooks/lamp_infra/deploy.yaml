@@ -1,0 +1,24 @@
+
+---
+# This playbook deploys the whole application stack in this site.
+
+- name: apply common configuration to all nodes
+  hosts: webservers,dbservers
+  become: true
+
+  roles:
+    - lamp_common
+
+- name: configure and deploy the webservers and application code
+  hosts: webservers
+  become: true
+
+  roles:
+    - lamp_web
+
+- name: deploy MySQL and configure the databases
+  hosts: dbservers
+  become: true
+
+  roles:
+    - lamp_db

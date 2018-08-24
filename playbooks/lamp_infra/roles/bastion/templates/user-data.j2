@@ -1,0 +1,13 @@
+#cloud-config
+
+fqdn: {{ server_fqdn }}
+
+packages:
+  - mc
+  - ansible
+  - python3-openstackclient
+
+growpart:
+mode: auto
+devices: ['/']
+ignore_growroot_disabled: false

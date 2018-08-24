@@ -1,0 +1,10 @@
+#cloud-config
+
+fqdn: {{ dbserver_fqdn }}
+
+packages:
+
+growpart:
+mode: auto
+devices: ['/']
+ignore_growroot_disabled: false

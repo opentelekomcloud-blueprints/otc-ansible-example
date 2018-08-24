@@ -1,0 +1,20 @@
+---
+bastion_task_manager:
+  - sec_group
+  - bastion
+
+module_state: present
+
+infra_prefix: test- # This should be overridden in inventory
+domain_name: example.com # This also should be overridden in inventory
+
+server_subnet: "{{ default_subnet_name | default('default-subnet') }}" # should be on pair with default value from network_infra
+server_net: "{{ default_network_name | default(infra_prefix + 'otc-net') }}" # should be on pair with default value from network_infra
+security_group: "{{ bastion_security_group | default(infra_prefix + 'bastion_sg') }}"
+server_fqdn: "{{ bastion_server_fqdn | default('bastion.' + domain_name) }}"
+server_image: "{{ bastion_image | default('Standard_Fedora_28_latest') }}"
+server_flavor: "{{ bastion_flavor | default('s2.large.1') }}"
+server_ssh_user: "{{ bastion_server_ssh_user | default('linux') }}"
+assign_floating_ip: "{{ bastion_assign_public_ip | default(True) }}"
+ssh_key_name: "{{ (infra_prefix + 'KeyPair')}}"
+# ansible_ssh_private_key_file: "{{ ('~/.ssh/' + ssh_key_name + '.pem') }}"

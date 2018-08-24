@@ -1,0 +1,24 @@
+---
+- name: provision LAMP insfrastructure
+  hosts: localhost
+  tasks:
+    - include_role:
+        name: lamp_infra
+
+- name: provision db and web servers
+  hosts: dbservers, webservers
+  become: true
+  tasks:
+    # Apply common role to server
+    - include_role:
+        name: server_common
+
+- name: message
+  hosts: localhost
+  tasks:
+    - name: print notice
+      debug:
+        msg: |
+          Add {{ groups.dbservers[0] }} ({{ hostvars[groups.dbservers[0]]['ansible_host'] }})
+          and {{ groups.webservers[0] }} ({{ hostvars[groups.webservers[0]]['ansible_host'] }})
+          to the inventory

@@ -1,0 +1,12 @@
+---
+# Include each particular element with net_module_state=absent
+- include_tasks: "{{ net_task }}.yaml"
+  vars:
+    net_module_state: absent
+  loop_control:
+    loop_var: net_task
+  with_items:
+    - router
+    - subnet
+    - net
+    # - keypair

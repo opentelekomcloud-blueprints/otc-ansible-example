@@ -1,0 +1,9 @@
+---
+- include: "{{ task }}.yaml"
+  vars:
+    module_state: absent
+  loop_control:
+    loop_var: task
+  with_items:
+    - bastion
+    - sec_group

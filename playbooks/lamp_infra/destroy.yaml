@@ -1,0 +1,9 @@
+---
+- name: Destroy Bastion
+  hosts: localhost
+  environment:
+    OS_CLOUD: "{{ cloud_name }}"
+  tasks:
+    - include_role:
+        name: bastion
+        tasks_from: unprovision

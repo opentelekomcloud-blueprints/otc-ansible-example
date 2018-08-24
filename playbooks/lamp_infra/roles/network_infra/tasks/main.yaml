@@ -1,0 +1,28 @@
+---
+- include: "{{ net_task }}.yaml"
+  loop_control:
+    loop_var: net_task
+  with_items: "{{ net_task_manager }}"
+
+# previous statement equals to
+# - include: "{{ net_task }}.yaml"
+#   loop_control:
+#     loop_var: net_task
+#   with_items:
+#     - net
+#     - subnet
+#     - router
+#     - keypair
+#
+# or more simple
+# - include: "net.yaml"
+# - include: "subnet.yaml"
+# - include: "router.yaml"
+# - include: "keypair.yaml"
+
+- name: Assert that elements were registered
+  assert:
+    that:
+      - net_network is defined
+      - net_subnet is defined
+      - net_router is defined

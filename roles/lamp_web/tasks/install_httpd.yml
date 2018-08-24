@@ -1,0 +1,33 @@
+---
+# These tasks install http and the php modules.
+
+- name: include OS-specific variables.
+  include_vars: "{{ ansible_os_family|lower }}.yaml"
+  when: ansible_os_family == 'RedHat'
+
+- name: include OS-specific variables.
+  include_vars: "{{ ansible_distribution|lower }}.yaml"
+  when: ansible_distribution == 'Fedora'
+
+- name: Install httpd and php
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ http_packages }}"
+
+- name: Install web role specific dependencies
+  package: name={{ item }} state=installed
+  with_items:
+   - git
+
+- name: Start firewalld
+  service: name=firewalld state=started enabled=yes
+
+- name: insert firewalld rule for httpd
+  firewalld: port={{ httpd_port }}/tcp permanent=true state=enabled immediate=yes
+
+- name: http service state
+  service: name=httpd state=started enabled=yes
+
+- name: Configure SELinux to allow httpd to connect to remote database
+  seboolean: name=httpd_can_network_connect_db state=true persistent=yes

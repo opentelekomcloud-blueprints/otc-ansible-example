@@ -1,0 +1,6 @@
+---
+- name: restart sshd
+  systemd: name=sshd state=restarted
+
+- name: restart journald
+  systemd: name=systemd-journald state=restarted

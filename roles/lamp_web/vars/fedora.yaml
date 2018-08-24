@@ -1,0 +1,5 @@
+---
+http_packages:
+ - httpd
+ - php
+ - php-mysqlnd

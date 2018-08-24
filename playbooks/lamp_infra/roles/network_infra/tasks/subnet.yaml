@@ -1,0 +1,16 @@
+---
+- name: Create default subnet
+  os_subnet:
+    name: "{{ subnet_name }}"
+    state: "{{ net_module_state }}"
+    network_name: "{{ network_name }}"
+    cidr: "{{ subnet_cidr }}"
+    dns_nameservers: "{{ subnet_dns_servers }}"
+  register: net_subnet
+  when: net_module_state != 'absent'
+
+- name: Delete default subnet
+  os_subnet:
+    name: "{{ subnet_name }}"
+    state: absent
+  when: net_module_state == 'absent'

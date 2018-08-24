@@ -1,0 +1,8 @@
+---
+- name: Create VPC
+  hosts: localhost
+  environment:
+    OS_CLOUD: "{{ cloud_name }}"
+  tasks:
+    - include_role:
+        name: network_infra

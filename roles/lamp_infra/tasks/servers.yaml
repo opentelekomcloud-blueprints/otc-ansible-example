@@ -1,0 +1,64 @@
+---
+- when: module_state != 'absent'
+  block:
+    - name: create DB server
+      os_server:
+        state: "{{ module_state }}"
+        auto_ip: false
+        name: "{{ dbserver_fqdn }}"
+        image: "{{ dbserver_image }}"
+        flavor: "{{ dbserver_flavor }}"
+        key_name: "{{ ssh_key_name }}"
+        boot_from_volume: true
+        volume_size: 10
+        network: "{{ server_net }}"
+        security_groups: "{{ dbserver_sg }}"
+        terminate_volume: true
+        userdata: "{{ lookup('template', './user-data.db.j2') }}"
+        meta: "group={{ dbserver_fqdn }},host-type=dbserver,ansible_user={{ server_ssh_user }}"
+      register: dbserver
+
+    - name: create WEB server
+      os_server:
+        state: "{{ module_state }}"
+        auto_ip: false
+        name: "{{ webserver_fqdn }}"
+        image: "{{ webserver_image }}"
+        flavor: "{{ webserver_flavor }}"
+        key_name: "{{ ssh_key_name }}"
+        boot_from_volume: true
+        volume_size: 10
+        network: "{{ server_net }}"
+        security_groups: "{{ webserver_sg }}"
+        terminate_volume: true
+        userdata: "{{ lookup('template', './user-data.web.j2') }}"
+        meta: "group={{ webserver_fqdn }},host-type=webserver,ansible_user={{ server_ssh_user }}"
+      register: webserver
+
+    - name: Add db to the inventory
+      add_host:
+        hostname: "{{ dbserver_fqdn }}"
+        ansible_host: "{{ dbserver['openstack']['private_v4'] }}"
+        ansible_user: "{{ server_ssh_user }}"
+        groups: dbservers
+
+    - name: Add web to the inventory
+      add_host:
+        hostname: "{{ webserver_fqdn }}"
+        ansible_host: "{{ webserver['openstack']['private_v4'] }}"
+        ansible_user: "{{ server_ssh_user }}"
+        groups: webservers
+
+
+- when: module_state == 'absent'
+  block:
+    - name: Delete db server
+      os_server:
+        state: absent
+        name: "{{ dbserver_fqdn }}"
+        delete_fip: True
+    - name: Delete web server
+      os_server:
+        state: absent
+        name: "{{ webserver_fqdn }}"
+        delete_fip: True

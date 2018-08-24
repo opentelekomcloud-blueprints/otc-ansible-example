@@ -1,0 +1,10 @@
+# Here can/should be the static inventory data after initial provisioning
+# to speed up further activities
+[bastions]
+#bastion.example.com ansible_user=linux ansible_host=160.44.193.204
+
+[dbservers]
+#db.example.com ansible_user=linux ansible_host=192.168.110.45 ansible_python_interpreter=/usr/bin/python3
+
+[webservers]
+#web.example.com ansible_user=linux ansible_host=192.168.110.80 ansible_python_interpreter=/usr/bin/python3

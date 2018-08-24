@@ -1,0 +1,45 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: Install ntp
+  package:
+    name: ntp
+    state: present
+  tags: ntp
+
+- name: Install common dependencies
+  package: name={{ item }} state=installed
+  with_items:
+   - libselinux-python
+   - libsemanage-python
+   - firewalld
+   - python3-firewall
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
+
+- name: enable selinux
+  selinux:
+    policy: targeted
+    state: enforcing
+  register: task_result
+
+- name: Reboot immediately if there was a change.
+  shell: "sleep 5 && reboot"
+  async: 1
+  poll: 0
+  when: task_result is changed
+
+- name: Wait for the reboot to complete if there was a change.
+  wait_for_connection:
+    connect_timeout: 20
+    sleep: 5
+    delay: 5
+    timeout: 300
+  when: task_result is changed

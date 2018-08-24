@@ -1,0 +1,6 @@
+---
+- name: Create Network
+  os_network:
+    name: "{{ network_name }}"
+    state: "{{ net_module_state }}"
+  register: net_network

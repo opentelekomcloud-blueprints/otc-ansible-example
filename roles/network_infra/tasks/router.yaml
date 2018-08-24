@@ -1,0 +1,22 @@
+---
+# old upstream openstacksdk version expects enable_snat to be defaulted to true,
+# but in OTC it is not that therefore it might berequired to enable snat
+# manually later or use heat. Using openstacksdk > 0.14.0 will not have this
+# problem
+- name: Create Router
+  os_router:
+    name: "{{ router_name }}"
+    state: "{{ net_module_state }}"
+    network: "{{ external_network_name }}"
+    enable_snat: True
+    interfaces:
+      - net: "{{ network_name }}"
+        subnet: "{{ subnet_name }}"
+  register: net_router
+  when: net_module_state != 'absent'
+
+- name: Delete Router
+  os_router:
+    name: "{{ router_name }}"
+    state: absent
+  when: net_module_state == 'absent'

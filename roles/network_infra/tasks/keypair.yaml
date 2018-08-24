@@ -1,0 +1,25 @@
+---
+- name: Create block
+  block:
+    - name: Create KeyPair
+      os_keypair:
+        state: "{{ net_module_state }}"
+        name: "{{ keypair_name }}"
+      register: keypair_output
+
+    - name: Save private key
+      copy:
+        dest: "{{ keypair_private_key }}"
+        content: "{{ keypair_output['key']['private_key'] }}"
+        mode: 0600
+      when:
+        - keypair_output is defined and keypair_output['key']['private_key'] is defined
+        - keypair_output.changed
+  when: net_module_state != 'absent'
+
+- name: Cleanup block
+  block:
+    - name: Print warning
+      debug:
+        msg: "KeyPair {{ keypair_private_key }} will not be deleted"
+  when: net_module_state == 'absent'

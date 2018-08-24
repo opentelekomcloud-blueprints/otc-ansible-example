@@ -1,0 +1,28 @@
+---
+- name: Create Bastion
+  hosts: localhost
+  environment:
+    OS_CLOUD: "{{ cloud_name }}"
+  tasks:
+    - include_role:
+        name: bastion
+
+- name: Provision Bastion
+  hosts: bastions
+  become: true
+  tasks:
+    # Apply common role to bastion
+    - include_role:
+        name: server_common
+
+    # Provision special stuff for bastion
+    - include_role:
+        name: bastion
+        tasks_from: install.yaml
+
+- name: message
+  hosts: localhost
+  tasks:
+    - name: print notice
+      debug:
+        msg: "Configure your SSH to have bastion {{ groups.bastions[0] }} ({{ hostvars[groups.bastions[0]]['ansible_host'] }}) be used as a proxy to other subnets"

@@ -1,0 +1,74 @@
+---
+- when: module_state != 'absent'
+  block:
+    - name: Create Server
+      os_server:
+        state: "{{ module_state }}"
+        auto_ip: false
+        name: "{{ server_fqdn }}"
+        image: "{{ server_image }}"
+        flavor: "{{ server_flavor }}"
+        key_name: "{{ ssh_key_name }}"
+        boot_from_volume: true
+        volume_size: 10
+        network: "{{ server_net }}"
+        security_groups: "{{ security_group }}"
+        terminate_volume: true
+        userdata: "{{ lookup('template', './user-data.j2') }}"
+        meta: "group={{ server_fqdn }},host-type=bastion,ansible_user={{ server_ssh_user }}"
+      register: bastion_server
+
+    # unfortunately it is not working to assign floating_ip, since server
+    # is busy when trying to assign IP
+    # TODO(gtema) - analyse openstacksdk and potentially check server state
+    - os_floating_ip:
+        server: "{{ server_fqdn }}"
+      when: assign_floating_ip
+
+    - name: get server info
+      os_server_facts:
+        server: "{{ server_fqdn }}"
+      when: assign_floating_ip
+
+    - name: Convert nets list into dict for bastion address retrieval
+      set_fact:
+        bastion_ips: "{{ bastion_ips|default({}) | combine( {item['OS-EXT-IPS:type']: item['addr']} ) }}"
+      with_items: "{{ openstack_servers[0]['addresses'][server_net] }}"
+      when: assign_floating_ip
+
+    # If not
+    - name: Convert nets list into dict for bastion address retrieval
+      set_fact:
+        bastion_ips: "{{ bastion_ips|default({}) | combine( {item['OS-EXT-IPS:type']: item['addr']} ) }}"
+      with_items: "{{ bastion_server['server']['addresses'][server_net] }}"
+      when: not assign_floating_ip
+
+    - name: Get the access address
+      set_fact:
+        bastion_interface_ip: "{{ bastion_ips['floating'] | default(bastion_ips['fixed']) }}"
+
+    - name: debug interface IP
+      debug:
+        var: bastion_interface_ip
+
+    # Wait for the server to really start and become accessible
+    - name: Check connectivity to the bastion server
+      wait_for:
+        port: 22
+        host: "{{ bastion_interface_ip }}"
+        timeout: 300
+
+    - name: Add the bastion to the inventory
+      add_host:
+        hostname: "{{ server_fqdn }}"
+        ansible_host: "{{ bastion_interface_ip }}"
+        ansible_user: "{{ server_ssh_user }}"
+        groups: bastions
+
+- when: module_state == 'absent'
+  block:
+    - name: Delete bastion server
+      os_server:
+        state: absent
+        name: "{{ server_fqdn }}"
+        delete_fip: True

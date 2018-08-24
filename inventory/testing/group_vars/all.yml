@@ -1,0 +1,30 @@
+cloud_name: otc
+
+infra_prefix: test1
+
+# Those can't remain in the network_infra role, since all other roles need those vars
+# network_name_suffix: otc-net
+
+# Those are used in all roles
+router_name_suffix: otc-vpc-router
+router_name: "{{ (infra_prefix + router_name_suffix) }}"
+
+domain_name: example.com
+
+# We can redefine bastion server image here
+# bastion_image: Fedora-Cloud-Base-28-1.1
+# bastion_server_ssh_user: fedora
+
+# ssh_key_name: cloud-KeyPair
+
+# Ansible variables to establish bastion/jump connection
+ansible_remote_user: "{{ (bastion_server_ssh_user | default(linux)) }}"
+ansible_ssh_private_key_file: "{{ ('~/.ssh/' + (ssh_key_name | default(infra_prefix + 'KeyPair')) + '.pem' )}}"
+
+
+# LAMP stuff
+httpd_port: 80
+ntpserver: 192.168.1.2
+repository: https://github.com/bennojoy/mywebapp.git
+
+# ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,24 @@
+---
+# Elements to be created by default. Order is important.
+net_task_manager:
+  - net
+  - subnet
+  - router
+  - keypair
+
+net_module_state: present
+
+external_network_name: admin_external_net
+infra_prefix: test- # This should be overridden in inventory
+
+network_name_suffix: otc-net
+router_name_suffix: otc-vpc-router
+network_name: "{{ (infra_prefix + network_name_suffix) }}"
+router_name: "{{ (infra_prefix + router_name_suffix) }}"
+
+subnet_name: "{{ default_subnet_name | default('default-subnet') }}"
+subnet_cidr: 192.168.110.0/24
+subnet_dns_servers: ['8.8.8.8', '8.8.4.4']
+
+keypair_name: "{{ ssh_key_name | default(infra_prefix + 'KeyPair') }}"
+keypair_private_key: "{{ ssh_key_private_key_file | default('~/.ssh/' + keypair_name + '.pem')}}"
