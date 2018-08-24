@@ -5,5 +5,5 @@
   loop_control:
     loop_var: task
   with_items:
-    - bastion
+    - servers
     - sec_group
