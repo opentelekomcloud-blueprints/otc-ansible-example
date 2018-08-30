@@ -11,22 +11,24 @@ A configuration of the cloud should be added into the
 `$HOME/.config/openstack/clouds.yaml`
 
 ~~~~
-otc_demo:
-  auth:
-    auth_url: https://iam.eu-de.otc.t-systems.com:443/v3
-    project_name: eu-de #required, since otherwise some APIs are not working
-    user_domain_name: OTC00000000001000000xxx
-  interface: public
-  identity_api_version: 3
+clouds:
+  otc_demo:
+    auth:
+      auth_url: https://iam.eu-de.otc.t-systems.com:443/v3
+      project_name: eu-de #required, since otherwise some APIs are not working
+      user_domain_name: OTC00000000001000000xxx
+    interface: public
+    identity_api_version: 3
 ~~~~
 
 `$HOME/.config/openstack/secure.yaml`
 
 ~~~~
-otc_demo:
-  auth:
-    username: MY_USER_NAME
-    password: MY_PASS
+clouds:
+  otc_demo:
+    auth:
+      username: MY_USER_NAME
+      password: MY_PASS
 ~~~~
 
 ### VPC creation
