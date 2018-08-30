@@ -1,6 +1,6 @@
 cloud_name: otc
 
-infra_prefix: test1
+infra_prefix: test1-
 
 # Those can't remain in the network_infra role, since all other roles need those vars
 # network_name_suffix: otc-net
