@@ -42,12 +42,14 @@
       # when: assign_web_floating_ip
 
     - name: Check connectivity to the web server
+      delegate_to: "{{ ('bastion.' + domain_name) }}"
       wait_for:
         port: 22
         host: "{{ webserver['openstack']['private_v4'] }}"
         timeout: 300
 
     - name: Check connectivity to the db server
+      delegate_to: "{{ ('bastion.' + domain_name) }}"
       wait_for:
         port: 22
         host: "{{ dbserver['openstack']['private_v4'] }}"
