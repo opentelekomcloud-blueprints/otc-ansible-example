@@ -71,6 +71,16 @@
 
 - when: module_state == 'absent'
   block:
+    - name: Release Floating IP
+      os_floating_ip:
+        server: "{{ webserver_fqdn }}"
+        state: absent
+        purge: true
+    - name: Release Floating IP
+      os_floating_ip:
+        server: "{{ dbserver_fqdn }}"
+        state: absent
+        purge: true
     - name: Delete db server
       os_server:
         state: absent
@@ -81,8 +91,3 @@
         state: absent
         name: "{{ webserver_fqdn }}"
         delete_fip: True
-    - name: Release Floating IP
-      os_floating_ip:
-        server: "{{ webserver_fqdn }}"
-        state: absent
-        purge: true
