@@ -90,11 +90,11 @@ groups.
 After this step is completed a "configuration management" can be started.
 IP addresses of the db and web servers should be stored in the inventory.
 
-### LAMP Configuration
+### LAMP SW Configuration
 
 LAMP stack servers can be configured:
 
-  `ansible-playbook -i inventory/testing playbooks/lamp_infra/main.yaml`
+  `ansible-playbook -i inventory/testing playbooks/lamp_infra/deploy.yaml`
 
 This installs required packages (mysql, php, apache), copies the code from
 app repo and deploys it. To check it on the webserver execute
