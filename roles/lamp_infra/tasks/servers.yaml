@@ -38,8 +38,7 @@
     # Initially start server with no FIP. Uncoment this to demostrate
     # infrastructure management change
     # - os_floating_ip:
-        # server: "{{ webserver['openstack']['private_v4'] }}"
-      # when: assign_web_floating_ip
+    #     server: "{{ webserver_fqdn }}"
 
     - name: Check connectivity to the web server
       delegate_to: "{{ ('bastion.' + domain_name) }}"
