@@ -1,3 +1,16 @@
+## Overview
+
+This is a good sample package to learn ansible. It covers Infrastructure
+Management and Configuration Managment.
+
+The sample shows how to setup a base infrastructure like: VPC, SUBNET
+and KeyPair (SSH) and provisions 3 ECS server (Bastion Host or Jump Host;
+WebServer and Database Server.)
+
+At the end you can view a simple website running on the WebServer.
+
+You can create and remove the complete infrastructure.
+
 ## Usage
 
 * First you need to adapt Ansible variables in the
