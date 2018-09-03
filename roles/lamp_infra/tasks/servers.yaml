@@ -81,3 +81,8 @@
         state: absent
         name: "{{ webserver_fqdn }}"
         delete_fip: True
+    - name: Release Floating IP
+      os_floating_ip:
+        server: "{{ webserver_fqdn }}"
+        state: absent
+        purge: true
