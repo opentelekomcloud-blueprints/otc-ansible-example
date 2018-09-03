@@ -5,7 +5,9 @@
   all individual playbooks
 
 To be able to work with openstack an `openstacksdk` python module should be
-installed on the local machine, where ansible will be triggered.
+installed on the local machine, where ansible will be triggered. This can be
+done either as a python package install `pip install openstacksdk`, or with
+native OS RPMs (if available).
 
 A configuration of the cloud should be added into the
 `$HOME/.config/openstack/clouds.yaml`
@@ -97,3 +99,15 @@ LAMP stack servers can be configured:
 This installs required packages (mysql, php, apache), copies the code from
 app repo and deploys it. To check it on the webserver execute
 `curl http://localhost/index.php`
+
+
+### Cleanup
+
+LAMP infra can be destroyed with:
+  `ansible-playbook -i inventory/testing playbooks/lamp_infra/destroy.yaml`
+
+Bastion host can be destroyed with:
+  `ansible-playbook -i inventory/testing playbooks/bastion/destroy.yaml`
+
+LAMP infra can be destroyed with:
+  `ansible-playbook -i inventory/testing playbooks/infra/destroy.yaml`
