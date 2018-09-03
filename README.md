@@ -55,7 +55,8 @@ This starts one server instance (ECS) and assigns floating IP to it.
 After this is done and the public IP is known the SSH configuration can be
 extended to access cloud through this host:
 
-Assuming Public IP is 1.1.1.1, in the `./ssh/config` please add the following:
+Assuming Public IP is 1.1.1.1, in the `./ssh/config` (0x600) please add the
+following:
 
 ~~~~
 # Bastion host
@@ -69,6 +70,7 @@ Host otc-bastion
 # App-cluster nodes access
 Host 192.168.110.*
   ProxyCommand ssh -W %h:%p otc-bastion
+  IdentityFile ~/.ssh/my-KeyPair.pem
 ~~~~
 
 In addition for the simplification of the further infrastructure usage it is

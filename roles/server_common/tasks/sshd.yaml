@@ -12,16 +12,16 @@
     state: started
 
 - name: disable root login
-  lineinfile:
+  replace:
     path: /etc/ssh/sshd_config
     regexp: '^PermitRootLogin.*'
-    line: 'PermitRootLogin no'
+    replace: 'PermitRootLogin no'
 
 - name: disable password login on bastion
-  lineinfile:
+  replace:
     path: /etc/ssh/sshd_config
     regexp: '^PasswordAuthentication.*'
-    line: 'PasswordAuthentication no'
+    replace: 'PasswordAuthentication no'
   notify:
     # Restart SSHD after last replacement
     - restart sshd
