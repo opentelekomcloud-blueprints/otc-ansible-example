@@ -35,6 +35,24 @@
         meta: "group={{ webserver_fqdn }},host-type=webserver,ansible_user={{ server_ssh_user }}"
       register: webserver
 
+    # Initially start server with no FIP. Uncoment this to demostrate
+    # infrastructure management change
+    # - os_floating_ip:
+        # server: "{{ webserver['openstack']['private_v4'] }}"
+      # when: assign_web_floating_ip
+
+    - name: Check connectivity to the web server
+      wait_for:
+        port: 22
+        host: "{{ webserver['openstack']['private_v4'] }}"
+        timeout: 300
+
+    - name: Check connectivity to the db server
+      wait_for:
+        port: 22
+        host: "{{ dbserver['openstack']['private_v4'] }}"
+        timeout: 300
+
     - name: Add db to the inventory
       add_host:
         hostname: "{{ dbserver_fqdn }}"
